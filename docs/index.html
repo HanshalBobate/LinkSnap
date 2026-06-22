@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinkSnap — Beautiful LinkedIn Screenshot Tool</title>
+  <meta name="description" content="Turn any LinkedIn post into a stunning, shareable screenshot in one click. A free Chrome Extension with macOS-style UI, gradient backgrounds, and one-click PNG export.">
+  <meta property="og:title" content="LinkSnap — Beautiful LinkedIn Screenshots">
+  <meta property="og:description" content="Capture LinkedIn posts as stunning, customizable PNG images. Free Chrome Extension.">
+  <meta property="og:image" content="https://hanshaldobate.github.io/LinkSnap/preview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../icons/icon128.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0a0a0a;
+      --white: #fafafa;
+      --yellow: #FFE500;
+      --blue: #0077B5;
+      --blue-light: #E8F4FD;
+      --pink: #FF3CAC;
+      --green: #00C853;
+      --orange: #FF6B35;
+      --border: 3px solid var(--black);
+      --shadow: 5px 5px 0px var(--black);
+      --shadow-lg: 8px 8px 0px var(--black);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background-color: var(--white);
+      color: var(--black);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ─────────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--yellow);
+      border-bottom: var(--border);
+      padding: 0 clamp(16px, 5vw, 80px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Space Mono', monospace;
+      font-weight: 700;
+      font-size: 1.1rem;
+      text-decoration: none;
+      color: var(--black);
+    }
+
+    .nav-logo img {
+      width: 32px;
+      height: 32px;
+      border: 2px solid var(--black);
+      border-radius: 8px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--black);
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 6px 14px;
+      border: 2px solid var(--black);
+      background: transparent;
+      transition: background 0.1s, transform 0.1s;
+    }
+
+    .nav-links a:hover {
+      background: var(--black);
+      color: var(--yellow);
+    }
+
+    .nav-links a.cta {
+      background: var(--black);
+      color: var(--yellow);
+    }
+
+    .nav-links a.cta:hover {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: var(--white);
+    }
+
+    /* ── HERO ─────────────────────────────────────────── */
+    .hero {
+      min-height: calc(100vh - 60px);
+      background: var(--blue-light);
+      border-bottom: var(--border);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+
+    .hero-left {
+      padding: clamp(40px, 8vw, 100px) clamp(24px, 5vw, 80px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-right: var(--border);
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: var(--yellow);
+      border: var(--border);
+      box-shadow: var(--shadow);
+      padding: 6px 14px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 24px;
+      width: fit-content;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 5vw, 4.2rem);
+      font-weight: 800;
+      line-height: 1.05;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+
+    .hero h1 .accent {
+      background: var(--blue);
+      color: var(--white);
+      padding: 0 8px;
+      display: inline-block;
+      transform: rotate(-1.5deg);
+    }
+
+    .hero-sub {
+      font-size: 1.15rem;
+      line-height: 1.6;
+      color: #333;
+      margin-bottom: 36px;
+      max-width: 480px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 26px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      border: var(--border);
+      box-shadow: var(--shadow);
+      transition: transform 0.1s, box-shadow 0.1s;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 7px 7px 0px var(--black);
+    }
+
+    .btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px var(--black);
+    }
+
+    .btn-primary {
+      background: var(--black);
+      color: var(--yellow);
+    }
+
+    .btn-secondary {
+      background: var(--white);
+      color: var(--black);
+    }
+
+    .hero-right {
+      padding: clamp(24px, 4vw, 60px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--white);
+      position: relative;
+    }
+
+    /* Fake browser mockup */
+    .browser-mockup {
+      width: 100%;
+      max-width: 500px;
+      border: var(--border);
+      box-shadow: var(--shadow-lg);
+      background: #f0f0f0;
+    }
+
+    .browser-bar {
+      background: #e0e0e0;
+      border-bottom: var(--border);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .browser-dots { display: flex; gap: 6px; }
+    .browser-dots span {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      border: 2px solid var(--black);
+      display: block;
+    }
+    .browser-dots span:nth-child(1) { background: #ff5f57; }
+    .browser-dots span:nth-child(2) { background: #febc2e; }
+    .browser-dots span:nth-child(3) { background: #28c840; }
+
+    .browser-url {
+      flex: 1;
+      background: var(--white);
+      border: 2px solid var(--black);
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      color: #555;
+    }
+
+    .browser-content {
+      background: #f8f9fa;
+      padding: 20px;
+    }
+
+    /* LinkedIn post mockup */
+    .lk-post {
+      background: var(--white);
+      border: var(--border);
+      font-size: 0.82rem;
+    }
+
+    .lk-post-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px;
+      border-bottom: 2px solid #eee;
+    }
+
+    .lk-avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0077B5, #00A0DC);
+      border: 2px solid var(--black);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .lk-post-meta { flex: 1; }
+    .lk-post-meta .name { font-weight: 700; color: var(--black); }
+    .lk-post-meta .headline { color: #666; font-size: 0.75rem; }
+
+    .lk-post-body { padding: 14px; line-height: 1.5; color: #333; }
+
+    .lk-post-actions {
+      display: flex;
+      padding: 8px 14px;
+      gap: 4px;
+      border-top: 2px solid #eee;
+    }
+
+    .lk-action-btn {
+      flex: 1;
+      padding: 8px 4px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #666;
+      background: none;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .lk-snap-btn {
+      background: var(--yellow) !important;
+      border: 2px solid var(--black) !important;
+      color: var(--black) !important;
+      font-weight: 700;
+      border-radius: 4px;
+      animation: pulse-btn 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-btn {
+      0%, 100% { box-shadow: none; }
+      50% { box-shadow: 0 0 0 3px rgba(255,229,0,0.4); }
+    }
+
+    /* ── TICKER ────────────────────────────────────────── */
+    .ticker {
+      background: var(--black);
+      color: var(--yellow);
+      border-bottom: var(--border);
+      padding: 10px 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .ticker-track {
+      display: inline-flex;
+      gap: 40px;
+      animation: ticker 20s linear infinite;
+    }
+
+    .ticker-item {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* ── FEATURES ──────────────────────────────────────── */
+    .features {
+      padding: clamp(40px, 8vw, 100px) clamp(24px, 5vw, 80px);
+      border-bottom: var(--border);
+    }
+
+    .section-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      border: var(--border);
+      background: var(--black);
+      color: var(--yellow);
+      padding: 6px 14px;
+      display: inline-block;
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 800;
+      text-transform: uppercase;
+      line-height: 1.1;
+      margin-bottom: 50px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 0;
+      border: var(--border);
+    }
+
+    .feature-card {
+      padding: 32px;
+      border-right: var(--border);
+      border-bottom: var(--border);
+      position: relative;
+      transition: background 0.15s;
+    }
+
+    .feature-card:hover { background: var(--yellow); }
+
+    .feature-card:last-child { border-right: none; }
+
+    .feature-icon {
+      font-size: 2.4rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .feature-card h3 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .feature-card p {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #444;
+    }
+
+    .feature-card:hover p { color: var(--black); }
+
+    /* ── HOW IT WORKS ─────────────────────────────────── */
+    .how-it-works {
+      background: var(--black);
+      color: var(--white);
+      padding: clamp(40px, 8vw, 100px) clamp(24px, 5vw, 80px);
+      border-bottom: var(--border);
+    }
+
+    .how-it-works .section-label {
+      background: var(--yellow);
+      color: var(--black);
+      border-color: var(--yellow);
+    }
+
+    .how-it-works .section-title { color: var(--white); }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0;
+      margin-top: 50px;
+    }
+
+    .step {
+      padding: 36px 28px;
+      border: 2px solid #333;
+      border-left: none;
+      position: relative;
+    }
+
+    .step:first-child { border-left: 2px solid #333; }
+
+    .step-num {
+      font-family: 'Space Mono', monospace;
+      font-size: 4rem;
+      font-weight: 700;
+      color: var(--yellow);
+      line-height: 1;
+      display: block;
+      margin-bottom: 16px;
+    }
+
+    .step h3 {
+      font-size: 1rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      color: var(--white);
+    }
+
+    .step p {
+      font-size: 0.88rem;
+      line-height: 1.6;
+      color: #aaa;
+    }
+
+    /* ── THEMES ────────────────────────────────────────── */
+    .themes-section {
+      padding: clamp(40px, 8vw, 100px) clamp(24px, 5vw, 80px);
+      border-bottom: var(--border);
+      background: var(--yellow);
+    }
+
+    .themes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-top: 40px;
+    }
+
+    .theme-pill {
+      border: var(--border);
+      box-shadow: var(--shadow);
+      padding: 14px 18px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: transform 0.1s, box-shadow 0.1s;
+      cursor: default;
+    }
+
+    .theme-pill:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 7px 7px 0 var(--black);
+    }
+
+    .theme-swatch {
+      width: 22px; height: 22px;
+      border: 2px solid var(--black);
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    /* ── INSTALL ──────────────────────────────────────── */
+    .install {
+      padding: clamp(40px, 8vw, 100px) clamp(24px, 5vw, 80px);
+      border-bottom: var(--border);
+    }
+
+    .install-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: var(--border);
+      box-shadow: var(--shadow-lg);
+      margin-top: 40px;
+    }
+
+    .install-steps {
+      padding: 40px;
+      border-right: var(--border);
+    }
+
+    .install-step {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .install-step-num {
+      width: 36px;
+      height: 36px;
+      background: var(--black);
+      color: var(--yellow);
+      font-family: 'Space Mono', monospace;
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: var(--border);
+    }
+
+    .install-step-text h4 {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .install-step-text p {
+      font-size: 0.88rem;
+      color: #555;
+      line-height: 1.5;
+    }
+
+    .install-step-text code {
+      font-family: 'Space Mono', monospace;
+      background: #f0f0f0;
+      border: 1px solid #ccc;
+      padding: 2px 6px;
+      font-size: 0.8rem;
+      border-radius: 2px;
+    }
+
+    .install-cta {
+      padding: 40px;
+      background: var(--blue);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .install-cta h3 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--white);
+      line-height: 1.2;
+    }
+
+    .install-cta p {
+      color: rgba(255,255,255,0.8);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .btn-white {
+      background: var(--white);
+      color: var(--black);
+    }
+
+    .btn-yellow {
+      background: var(--yellow);
+      color: var(--black);
+    }
+
+    /* ── FOOTER ────────────────────────────────────────── */
+    footer {
+      background: var(--black);
+      color: var(--white);
+      padding: clamp(30px, 5vw, 60px) clamp(24px, 5vw, 80px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+      border-top: var(--border);
+    }
+
+    .footer-logo {
+      font-family: 'Space Mono', monospace;
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--yellow);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: #aaa;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: color 0.15s;
+    }
+
+    .footer-links a:hover { color: var(--yellow); }
+
+    .footer-copy {
+      font-size: 0.8rem;
+      color: #555;
+      font-family: 'Space Mono', monospace;
+    }
+
+    /* ── NOISE OVERLAY ─────────────────────────────────── */
+    .noise {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-size: 150px 150px;
+    }
+
+    /* ── RESPONSIVE ────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-left { border-right: none; border-bottom: var(--border); }
+      .hero-right { display: none; }
+      .install-grid { grid-template-columns: 1fr; }
+      .install-steps { border-right: none; border-bottom: var(--border); }
+      .steps { grid-template-columns: 1fr; }
+      .step { border-left: 2px solid #333; border-top: none; }
+      .step:first-child { border-top: 2px solid #333; }
+      nav .nav-links { display: none; }
+      .features-grid { grid-template-columns: 1fr; }
+      .feature-card { border-right: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="noise"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">
+      <img src="../icons/icon128.png" alt="LinkSnap">
+      LinkSnap
+    </a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#install">Install</a>
+      <a href="https://github.com/HanshalBobate/LinkSnap" target="_blank">GitHub</a>
+      <a href="https://github.com/HanshalBobate/LinkSnap" target="_blank" class="cta">⭐ Star</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <div class="hero-badge">🆓 Free &amp; Open Source Chrome Extension</div>
+      <h1>
+        Snap<br>
+        LinkedIn<br>
+        <span class="accent">Posts</span><br>
+        Beautifully.
+      </h1>
+      <p class="hero-sub">
+        Turn any LinkedIn post into a stunning, shareable screenshot with one click. 
+        Gradient backgrounds, macOS chrome, custom themes — exported at 3× resolution.
+      </p>
+      <div class="hero-actions">
+        <a href="https://github.com/HanshalBobate/LinkSnap" target="_blank" class="btn btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+          Get it on GitHub
+        </a>
+        <a href="#features" class="btn btn-secondary">See Features →</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="browser-mockup">
+        <div class="browser-bar">
+          <div class="browser-dots">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="browser-url">linkedin.com/feed</div>
+        </div>
+        <div class="browser-content">
+          <div class="lk-post">
+            <div class="lk-post-header">
+              <div class="lk-avatar">H</div>
+              <div class="lk-post-meta">
+                <div class="name">Hanshal Bobate</div>
+                <div class="headline">Building cool stuff • Open Source</div>
+              </div>
+            </div>
+            <div class="lk-post-body">
+              🚀 Excited to share <strong>LinkSnap</strong> — a Chrome extension that lets you capture LinkedIn posts as beautiful, customizable screenshots in one click!<br><br>
+              No more bad screenshots. Just pure 🔥
+            </div>
+            <div class="lk-post-actions">
+              <button class="lk-action-btn">👍 Like</button>
+              <button class="lk-action-btn">💬 Comment</button>
+              <button class="lk-action-btn">↗ Share</button>
+              <button class="lk-action-btn lk-snap-btn">📸 Snap</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <span class="ticker-item">📸 One-Click Snap</span>
+      <span class="ticker-item">★★★★★</span>
+      <span class="ticker-item">🎨 6 Themes</span>
+      <span class="ticker-item">★★★★★</span>
+      <span class="ticker-item">🌈 7 Gradient Backgrounds</span>
+      <span class="ticker-item">★★★★★</span>
+      <span class="ticker-item">📥 3× Resolution Export</span>
+      <span class="ticker-item">★★★★★</span>
+      <span class="ticker-item">🔒 100% Local — Zero Data Collected</span>
+      <span class="ticker-item">★★★★★</span>
+      <span class="ticker-item">📸 One-Click Snap</span>
+      <span class="ticker-item">★★★★★</span>
+      <span class="ticker-item">🎨 6 Themes</span>
+      <span class="ticker-item">★★★★★</span>
+      <span class="ticker-item">🌈 7 Gradient Backgrounds</span>
+      <span class="ticker-item">★★★★★</span>
+      <span class="ticker-item">📥 3× Resolution Export</span>
+      <span class="ticker-item">★★★★★</span>
+      <span class="ticker-item">🔒 100% Local — Zero Data Collected</span>
+      <span class="ticker-item">★★★★★</span>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <div class="section-label">What You Get</div>
+    <h2 class="section-title">Every Feature<br>You Need.</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="feature-icon">📸</span>
+        <h3>One-Click Snap</h3>
+        <p>A Snap button appears directly on every LinkedIn feed post, inline with Like, Comment, and Share. Zero friction.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🎨</span>
+        <h3>6 Premium Themes</h3>
+        <p>macOS Light, macOS Dark, Carbon, Ray.so, Vercel, GitHub Dark. Switch themes live and see the card update instantly.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🌈</span>
+        <h3>7 Gradient Backgrounds</h3>
+        <p>Sunset, Cosmic, Aurora, Carbon, Ocean, Neon, Minimal. Click a swatch and the background updates in real time.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🔧</span>
+        <h3>Live Customization</h3>
+        <p>Sliders for Padding, Card Width, and Text Length. Toggle Avatar, Post Image, and Metrics on or off. Total control.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">📥</span>
+        <h3>3× PNG Export</h3>
+        <p>Download at 3× pixel ratio for crisp, Retina-quality images. Perfect for Twitter, Notion, Figma, or anywhere.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🔒</span>
+        <h3>Privacy First</h3>
+        <p>Everything runs locally in your browser. No data ever leaves your machine. No accounts, no tracking, no nonsense.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-it-works" id="how">
+    <div class="section-label">How It Works</div>
+    <h2 class="section-title">Three Steps.<br>That's It.</h2>
+    <div class="steps">
+      <div class="step">
+        <span class="step-num">01</span>
+        <h3>Browse LinkedIn</h3>
+        <p>Install the extension and head to your LinkedIn feed. A 📸 Snap button automatically appears on every post.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">02</span>
+        <h3>Click Snap</h3>
+        <p>Click the Snap button. A beautiful customization dashboard opens with a live preview of your post card.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">03</span>
+        <h3>Customize &amp; Export</h3>
+        <p>Choose your theme, background, and adjust the sliders. Hit Download PNG or Copy to Clipboard. Done.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- THEMES -->
+  <section class="themes-section">
+    <div class="section-label">Themes &amp; Gradients</div>
+    <h2 class="section-title">Your Post.<br>Your Style.</h2>
+    <div class="themes-grid">
+      <div class="theme-pill" style="background:#fff;">
+        <div class="theme-swatch" style="background:#f5f5f7;"></div>
+        macOS Light
+      </div>
+      <div class="theme-pill" style="background:#1e1e1e;color:#fff;border-color:#fff;">
+        <div class="theme-swatch" style="background:#2d2d2d;border-color:#fff;"></div>
+        macOS Dark
+      </div>
+      <div class="theme-pill" style="background:#161616;color:#f4f4f4;border-color:#f4f4f4;">
+        <div class="theme-swatch" style="background:#262626;border-color:#f4f4f4;"></div>
+        Carbon
+      </div>
+      <div class="theme-pill" style="background:#191919;color:#ebebeb;border-color:#444;">
+        <div class="theme-swatch" style="background:#2d2d2d;border-color:#444;"></div>
+        Ray.so
+      </div>
+      <div class="theme-pill" style="background:#fff;">
+        <div class="theme-swatch" style="background:#000;"></div>
+        Vercel
+      </div>
+      <div class="theme-pill" style="background:#0d1117;color:#c9d1d9;border-color:#30363d;">
+        <div class="theme-swatch" style="background:#161b22;border-color:#30363d;"></div>
+        GitHub Dark
+      </div>
+    </div>
+  </section>
+
+  <!-- INSTALL -->
+  <section class="install" id="install">
+    <div class="section-label">Get Started</div>
+    <h2 class="section-title">Install in<br>60 Seconds.</h2>
+    <div class="install-grid">
+      <div class="install-steps">
+        <div class="install-step">
+          <div class="install-step-num">1</div>
+          <div class="install-step-text">
+            <h4>Clone the Repository</h4>
+            <p>Run <code>git clone https://github.com/HanshalBobate/LinkSnap.git</code> or download the ZIP from GitHub.</p>
+          </div>
+        </div>
+        <div class="install-step">
+          <div class="install-step-num">2</div>
+          <div class="install-step-text">
+            <h4>Open Chrome Extensions</h4>
+            <p>Navigate to <code>chrome://extensions</code> in your Chrome browser.</p>
+          </div>
+        </div>
+        <div class="install-step">
+          <div class="install-step-num">3</div>
+          <div class="install-step-text">
+            <h4>Enable Developer Mode</h4>
+            <p>Toggle "Developer mode" in the top-right corner of the extensions page.</p>
+          </div>
+        </div>
+        <div class="install-step">
+          <div class="install-step-num">4</div>
+          <div class="install-step-text">
+            <h4>Load Unpacked</h4>
+            <p>Click "Load unpacked" and select the <code>LinkSnap/</code> folder. That's it!</p>
+          </div>
+        </div>
+      </div>
+      <div class="install-cta">
+        <h3>Free Forever.<br>Open Source.</h3>
+        <p>LinkSnap is MIT licensed. Fork it, extend it, make it yours. Star the repo to support the project!</p>
+        <a href="https://github.com/HanshalBobate/LinkSnap" target="_blank" class="btn btn-yellow">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+          View on GitHub
+        </a>
+        <a href="https://github.com/HanshalBobate/LinkSnap/archive/refs/heads/main.zip" class="btn btn-white">
+          ⬇ Download ZIP
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">LinkSnap</div>
+    <div class="footer-links">
+      <a href="https://github.com/HanshalBobate/LinkSnap" target="_blank">GitHub</a>
+      <a href="https://github.com/HanshalBobate/LinkSnap/issues" target="_blank">Issues</a>
+      <a href="https://github.com/HanshalBobate/LinkSnap/blob/main/LICENSE" target="_blank">MIT License</a>
+      <a href="https://www.linkedin.com" target="_blank">LinkedIn</a>
+    </div>
+    <div class="footer-copy">MIT © 2025 HanshalBobate</div>
+  </footer>
+
+</body>
+</html>
