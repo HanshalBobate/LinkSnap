@@ -1,0 +1,538 @@
+/* ============================================================
+   LinkSnap — Modal & Dashboard Styles
+   Uses a scoped #linksnap-modal ancestor to avoid conflicts
+   with LinkedIn styles. NO `all: initial` (breaks inheritance).
+   ============================================================ */
+
+/* ---------- Root overlay ---------- */
+#linksnap-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  animation: ls-fade-in 0.22s ease forwards;
+}
+
+#linksnap-modal *,
+#linksnap-modal *::before,
+#linksnap-modal *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ---------- Main shell ---------- */
+#linksnap-modal .linksnap-dashboard {
+  display: flex;
+  width: min(96vw, 1060px);
+  height: min(88vh, 780px);
+  background: #0f0f11;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04) inset;
+  animation: ls-slide-up 0.3s cubic-bezier(0.34, 1.36, 0.64, 1) forwards;
+}
+
+/* ============================================================
+   LEFT SIDEBAR
+   ============================================================ */
+#linksnap-modal .linksnap-controls {
+  width: 260px;
+  flex-shrink: 0;
+  background: #0a0a0c;
+  border-right: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#linksnap-modal .linksnap-controls::-webkit-scrollbar {
+  width: 4px;
+}
+#linksnap-modal .linksnap-controls::-webkit-scrollbar-track {
+  background: transparent;
+}
+#linksnap-modal .linksnap-controls::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+}
+
+/* Logo / header strip */
+#linksnap-modal .ls-sidebar-header {
+  padding: 18px 18px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#linksnap-modal .ls-sidebar-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+
+#linksnap-modal .ls-sidebar-version {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 600;
+  color: #71717a;
+  background: rgba(255,255,255,0.06);
+  padding: 2px 6px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+}
+
+/* Scrollable controls body */
+#linksnap-modal .ls-controls-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  flex: 1;
+}
+
+/* Section heading */
+#linksnap-modal .ls-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #52525b;
+  margin-bottom: 8px;
+}
+
+/* Select */
+#linksnap-modal .ls-select {
+  width: 100%;
+  padding: 9px 11px;
+  background: #1a1a1f;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 28px;
+  transition: border-color 0.15s;
+}
+#linksnap-modal .ls-select:focus {
+  border-color: #3b82f6;
+}
+#linksnap-modal .ls-select option {
+  background: #18181b;
+  color: #ffffff;
+}
+
+/* Gradient swatches */
+#linksnap-modal .ls-grad-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+#linksnap-modal .ls-grad-btn {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+  outline: none;
+  padding: 0;
+}
+#linksnap-modal .ls-grad-btn:hover {
+  transform: scale(1.12);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.12);
+}
+#linksnap-modal .ls-grad-btn.active {
+  border-color: #fff;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.4);
+  transform: scale(1.08);
+}
+
+/* Sliders */
+#linksnap-modal .ls-range-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+#linksnap-modal .ls-range-val {
+  font-size: 11px;
+  font-weight: 600;
+  color: #71717a;
+  width: 36px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+#linksnap-modal input[type="range"] {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: #27272a;
+  outline: none;
+  cursor: pointer;
+}
+#linksnap-modal input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  transition: background 0.15s, transform 0.1s;
+}
+#linksnap-modal input[type="range"]::-webkit-slider-thumb:hover {
+  background: #3b82f6;
+  transform: scale(1.15);
+}
+
+/* Toggle switches */
+#linksnap-modal .ls-toggle-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+#linksnap-modal .ls-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 9px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+#linksnap-modal .ls-toggle-row:hover {
+  background: rgba(255,255,255,0.04);
+}
+
+#linksnap-modal .ls-toggle-label {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #d4d4d8;
+  user-select: none;
+}
+
+/* Pill toggle switch */
+#linksnap-modal .ls-switch {
+  position: relative;
+  width: 34px;
+  height: 19px;
+  flex-shrink: 0;
+}
+#linksnap-modal .ls-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+#linksnap-modal .ls-switch-track {
+  position: absolute;
+  inset: 0;
+  background: #3f3f46;
+  border-radius: 999px;
+  transition: background 0.2s;
+}
+#linksnap-modal .ls-switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+#linksnap-modal .ls-switch input:checked ~ .ls-switch-track {
+  background: #3b82f6;
+}
+#linksnap-modal .ls-switch input:checked ~ .ls-switch-thumb {
+  transform: translateX(15px);
+}
+#linksnap-modal .ls-switch input:disabled ~ .ls-switch-track {
+  opacity: 0.3;
+}
+
+/* Action buttons */
+#linksnap-modal .ls-actions {
+  padding: 14px 16px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#linksnap-modal .ls-btn-primary {
+  width: 100%;
+  padding: 10px 16px;
+  background: #3b82f6;
+  border: none;
+  border-radius: 9px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  transition: background 0.15s, transform 0.1s;
+}
+#linksnap-modal .ls-btn-primary:hover { background: #2563eb; }
+#linksnap-modal .ls-btn-primary:active { transform: scale(0.97); }
+#linksnap-modal .ls-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+#linksnap-modal .ls-btn-secondary {
+  width: 100%;
+  padding: 9px 16px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 9px;
+  color: #a1a1aa;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+#linksnap-modal .ls-btn-secondary:hover {
+  border-color: rgba(255,255,255,0.2);
+  color: #fff;
+  background: rgba(255,255,255,0.04);
+}
+
+/* ============================================================
+   RIGHT PREVIEW AREA
+   ============================================================ */
+#linksnap-modal .linksnap-preview-area {
+  flex: 1;
+  background: #0d0d10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  overflow: auto;
+  min-width: 0;
+}
+
+#linksnap-modal .linksnap-preview-area::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+#linksnap-modal .linksnap-preview-area::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.1);
+  border-radius: 6px;
+}
+
+/* Canvas capture target */
+#linksnap-modal #linksnap-canvas {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 14px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+  transition: padding 0.15s;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+/* Background gradients */
+#linksnap-modal .ls-bg-sunset { background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%); }
+#linksnap-modal .ls-bg-cosmic { background: linear-gradient(135deg, #8a2387 0%, #e94057 50%, #f27121 100%); }
+#linksnap-modal .ls-bg-aurora { background: linear-gradient(135deg, #0f9b58 0%, #00bf8f 100%); }
+#linksnap-modal .ls-bg-carbon { background: linear-gradient(135deg, #1c1c1e 0%, #2c2c2e 100%); }
+#linksnap-modal .ls-bg-ocean  { background: linear-gradient(135deg, #1a6dff 0%, #00cfde 100%); }
+#linksnap-modal .ls-bg-neon   { background: linear-gradient(135deg, #f857a6 0%, #ff5858 100%); }
+#linksnap-modal .ls-bg-glass  { background: linear-gradient(135deg, #c9d6df 0%, #f2f7fb 100%); }
+
+/* ============================================================
+   SNAP CARD (the exported element)
+   ============================================================ */
+#linksnap-modal .linksnap-window {
+  background: var(--ls-card-bg, #fff);
+  border-radius: 12px;
+  border: 1px solid var(--ls-card-border, rgba(0,0,0,0.08));
+  box-shadow: var(--ls-card-shadow, 0 8px 24px rgba(0,0,0,0.1));
+  overflow: hidden;
+  width: 580px;
+  text-align: left;
+  transition: width 0.15s;
+}
+
+/* Window traffic-light bar */
+#linksnap-modal .titlebar {
+  padding: 10px 14px;
+  background: var(--ls-titlebar-bg, #f4f4f5);
+  border-bottom: 1px solid var(--ls-titlebar-border, rgba(0,0,0,0.06));
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+#linksnap-modal .titlebar .dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+#linksnap-modal .titlebar .dot.red    { background: #ff5f56; }
+#linksnap-modal .titlebar .dot.yellow { background: #ffbd2e; }
+#linksnap-modal .titlebar .dot.green  { background: #27c93f; }
+#linksnap-modal .titlebar-text {
+  margin-left: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ls-titlebar-text, #71717a);
+  letter-spacing: 0.02em;
+}
+
+/* Card body */
+#linksnap-modal #snap-card {
+  padding: 20px 22px 18px;
+}
+
+/* Author header */
+#linksnap-modal .snap-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+  position: relative;
+}
+#linksnap-modal .profile-image {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid var(--ls-card-border, rgba(0,0,0,0.08));
+  background: #e4e4e7;
+}
+#linksnap-modal .snap-author-info h2 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ls-card-text, #18181b);
+  line-height: 1.3;
+}
+#linksnap-modal .snap-author-info p {
+  font-size: 12px;
+  color: var(--ls-card-subtext, #71717a);
+  line-height: 1.4;
+  margin-top: 2px;
+  max-width: 400px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+#linksnap-modal .linkedin-logo-watermark {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 18px;
+  opacity: 0.6;
+  color: #0a66c2;
+  fill: currentColor;
+}
+
+/* Post text */
+#linksnap-modal .post-text {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--ls-card-text, #18181b);
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin-bottom: 14px;
+}
+
+/* Post media */
+#linksnap-modal .post-media {
+  margin-bottom: 14px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--ls-card-border, rgba(0,0,0,0.08));
+}
+#linksnap-modal .post-media img {
+  width: 100%;
+  height: auto;
+  max-height: 360px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Metrics row */
+#linksnap-modal .metrics {
+  display: flex;
+  gap: 14px;
+  border-top: 1px solid var(--ls-metrics-border, rgba(0,0,0,0.07));
+  padding-top: 11px;
+  font-size: 12px;
+  color: var(--ls-card-subtext, #71717a);
+}
+#linksnap-modal .metric-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Canvas watermark strip */
+#linksnap-modal .linksnap-canvas-watermark {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: rgba(255,255,255,0.5);
+  text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  padding: 10px 0 6px;
+  text-align: center;
+  width: 100%;
+}
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+#linksnap-modal .ls-hide {
+  display: none !important;
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes ls-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes ls-slide-up {
+  from { opacity: 0; transform: translateY(16px) scale(0.975); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);     }
+}

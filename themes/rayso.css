@@ -1,0 +1,17 @@
+/* LinkSnap Ray.so Theme */
+#linksnap-modal {
+  --ls-card-bg: #0d0d0d;
+  --ls-card-text: #ffffff;
+  --ls-card-subtext: #888888;
+  --ls-card-border: rgba(255, 255, 255, 0.08);
+  --ls-card-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+  --ls-titlebar-bg: #0d0d0d;
+  --ls-titlebar-border: rgba(255, 255, 255, 0.04);
+  --ls-titlebar-text: #888888;
+  --ls-watermark-text: rgba(255, 255, 255, 0.2);
+  --ls-metrics-border: rgba(255, 255, 255, 0.06);
+  --ls-link-color: #e5c07b;
+}
+#linksnap-modal .linksnap-window {
+  border-radius: 12px;
+}

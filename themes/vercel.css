@@ -1,0 +1,17 @@
+/* LinkSnap Vercel Theme */
+#linksnap-modal {
+  --ls-card-bg: #000000;
+  --ls-card-text: #ffffff;
+  --ls-card-subtext: #888888;
+  --ls-card-border: #333333;
+  --ls-card-shadow: 0 0 0 1px #333333, 0 30px 60px rgba(0, 0, 0, 0.6);
+  --ls-titlebar-bg: #000000;
+  --ls-titlebar-border: #333333;
+  --ls-titlebar-text: #ffffff;
+  --ls-watermark-text: rgba(255, 255, 255, 0.15);
+  --ls-metrics-border: #333333;
+  --ls-link-color: #0070f3;
+}
+#linksnap-modal .linksnap-window {
+  border-radius: 8px; /* Classic Vercel rounded-md */
+}

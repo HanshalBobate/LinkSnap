@@ -1,0 +1,20 @@
+/* LinkSnap Carbon Theme */
+#linksnap-modal {
+  --ls-card-bg: #161616;
+  --ls-card-text: #f4f4f4;
+  --ls-card-subtext: #8d8d8d;
+  --ls-card-border: #393939;
+  --ls-card-shadow: 0 15px 30px rgba(0, 0, 0, 0.45);
+  --ls-titlebar-bg: #262626;
+  --ls-titlebar-border: #393939;
+  --ls-titlebar-text: #e0e0e0;
+  --ls-watermark-text: rgba(244, 244, 244, 0.2);
+  --ls-metrics-border: #393939;
+  --ls-link-color: #78a9ff;
+}
+#linksnap-modal .linksnap-window {
+  border-radius: 4px; /* Sharp corners for Carbon theme */
+}
+#linksnap-modal #snap-card {
+  border-radius: 0;
+}

@@ -1,0 +1,14 @@
+/* LinkSnap macOS Light Theme */
+#linksnap-modal {
+  --ls-card-bg: #ffffff;
+  --ls-card-text: #1d1d1f;
+  --ls-card-subtext: #86868b;
+  --ls-card-border: rgba(0, 0, 0, 0.08);
+  --ls-card-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+  --ls-titlebar-bg: #f5f5f7;
+  --ls-titlebar-border: rgba(0, 0, 0, 0.05);
+  --ls-titlebar-text: #515154;
+  --ls-watermark-text: rgba(0, 0, 0, 0.3);
+  --ls-metrics-border: rgba(0, 0, 0, 0.06);
+  --ls-link-color: #0a66c2;
+}

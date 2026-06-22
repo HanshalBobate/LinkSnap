@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LinkSnap Controls</title>
+  <link rel="stylesheet" href="popup.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="linksnap-popup-wrapper">
+    <!-- Header -->
+    <header class="popup-header">
+      <span class="logo-icon">📸</span>
+      <h1>LinkSnap <span class="badge">V1.0</span></h1>
+    </header>
+
+    <!-- Content Sections -->
+    <main class="popup-main">
+      <section class="config-section">
+        <h2>Default Preset Settings</h2>
+        
+        <!-- Theme Select -->
+        <div class="field-group">
+          <label for="popup-theme">Default Theme</label>
+          <select id="popup-theme">
+            <option value="macos-dark">macOS Dark</option>
+            <option value="macos-light">macOS Light</option>
+            <option value="carbon">Carbon</option>
+            <option value="rayso">Ray.so</option>
+            <option value="vercel">Vercel</option>
+            <option value="github-dark">GitHub Dark</option>
+          </select>
+        </div>
+
+        <!-- Gradient Select -->
+        <div class="field-group">
+          <label for="popup-gradient">Default Background</label>
+          <select id="popup-gradient">
+            <option value="sunset">Sunset Glow</option>
+            <option value="cosmic">Cosmic Space</option>
+            <option value="aurora">Nordic Aurora</option>
+            <option value="carbon">Technical Slate</option>
+            <option value="ocean">Ocean Blue</option>
+            <option value="neon">Neon Rose</option>
+            <option value="glass">Minimalist Light</option>
+          </select>
+        </div>
+
+        <!-- Padding Slider -->
+        <div class="field-group">
+          <label>Default Padding: <span id="val-padding">48px</span></label>
+          <input type="range" id="popup-padding" min="16" max="96" value="48">
+        </div>
+
+        <!-- Card Width Slider -->
+        <div class="field-group">
+          <label>Default Card Width: <span id="val-width">650px</span></label>
+          <input type="range" id="popup-width" min="450" max="800" value="650">
+        </div>
+      </section>
+
+      <!-- Quick Guide -->
+      <section class="guide-section">
+        <h2>How to Use</h2>
+        <ol class="usage-steps">
+          <li>Navigate to <a href="https://www.linkedin.com" target="_blank" class="link-highlight">LinkedIn</a>.</li>
+          <li>Locate any feed post.</li>
+          <li>Click the <strong class="badge-btn">📸 Snap</strong> button next to the Like/Comment action buttons.</li>
+          <li>Customize the layout, and click <strong>Download PNG</strong> or <strong>Copy</strong>!</li>
+        </ol>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="popup-footer">
+      <p>Made with ❤️ for content creators</p>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
