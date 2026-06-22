@@ -42,14 +42,14 @@ Clicking **Snap** opens a full customization dashboard:
 │  ┌────────────┐ │   ┌──────────────────────────────┐   │
 │  │ macOS Dark │ │   │  ● ● ●  linkedin.com         │   │
 │  └────────────┘ │   ├──────────────────────────────┤   │
-│                 │   │  👤 Jane Doe                  │   │
+│                 │   │  👤 Jane Doe                 │   │
 │  Background     │   │     Senior Engineer @ Meta   │   │
-│  ○ ○ ○ ○ ○ ○ ○ │   │                               │   │
-│                 │   │  Excited to share that I...   │   │
-│  Padding    48  │   │                               │   │
-│  ──────────●──  │   │  👍 1.2K  💬 84  🔁 32       │   │
+│  ○ ○ ○ ○ ○ ○ ○  │   │                              │   │
+│                 │   │  Excited to share that I...  │   │
+│  Padding    48  │   │                              │   │
+│  ──────────●──  │   │  👍 1.2K  💬 84  🔁 32      │   │
 │                 │   └──────────────────────────────┘   │
-│  Card Width 580 │  Made using github.com/HanshalBobate/LinkSnap │
+│  Card Width 580 │                                      │
 │  ────────●────  │                                      │
 │                 │                                      │
 │  Text Length 300│                                      │
