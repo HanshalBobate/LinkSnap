@@ -14,18 +14,6 @@
 LinkSnap is a Chrome extension inspired by [CodeSnap](https://marketplace.visualstudio.com/items?itemName=adpyke.codesnap) and [Ray.so](https://ray.so). It lets you capture LinkedIn posts as stunning, customizable PNG images with macOS-style window chrome, gradient backgrounds, and one-click export.
 
 ---
-<div align="center">
-  <img src="icons/icon128.png" width="128" height="128" alt="LinkSnap Logo">
-
-  # LinkSnap
-
-  **Turn any LinkedIn post into a beautiful, shareable screenshot — in one click.**
-</div>
-
-https://github.com/HanshalBobate/LinkSnap/blob/main/docs/demo.mp4
-
-> 🎥 15-second product demo
----
 
 ## ✨ Features
 
