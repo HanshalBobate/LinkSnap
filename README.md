@@ -1,3 +1,8 @@
+![Version](https://img.shields.io/badge/version-v1.0.0-blue)
+![Manifest](https://img.shields.io/badge/Manifest-V3-green)
+![License](https://img.shields.io/badge/license-MIT-yellow)
+![LinkedIn](https://img.shields.io/badge/LinkedIn-Supported-0A66C2)
+
 <div align="center">
   <img src="icons/icon128.png" width="128" height="128" alt="LinkSnap Logo">
   
